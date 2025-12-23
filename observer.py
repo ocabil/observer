@@ -20,8 +20,8 @@ def enroll(event: str):
         from observer import enroll
 
         @enroll("event")
-        def handler(payload: dict):
-            print(f"{handler.__name__} received payload: {payload}")
+        def handler(data: dict):
+            print(f"{handler.__name__} received data: {data}")
     """
 
     def decorator(handler):
@@ -42,7 +42,7 @@ def erase(event: str, handler) -> bool:
         return False
 
 
-def dispatch(event: str, payload: dict) -> None:
+def dispatch(event: str, data: dict) -> None:
     """
     Calls all handlers enrolled for a given event.
     """
@@ -52,6 +52,6 @@ def dispatch(event: str, payload: dict) -> None:
 
     for enrollee in _enrolled.get(event, set()):
         if _asynchronous(enrollee):
-            asyncio.run(enrollee(payload=payload))
+            asyncio.run(enrollee(data=data))
         else:
-            enrollee(payload=payload)
+            enrollee(data=data)

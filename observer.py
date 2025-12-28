@@ -10,6 +10,28 @@ import asyncio
 _enrolled: dict[str, set] = {}
 
 
+async def adispatch(event: str, data: dict) -> None:
+    """
+    Asynchronously calls all handlers enrolled for a given event.
+    """
+
+    def _asynchronous(handler) -> bool:
+        return type(handler) is not type(lambda: None)
+
+    for enrollee in _enrolled.get(event, set()):
+        if _asynchronous(enrollee):
+            await enrollee(data=data)
+        else:
+            enrollee(data=data)
+
+
+def dispatch(event: str, data: dict) -> None:
+    """
+    Calls all handlers enrolled for a given event.
+    """
+    return asyncio.run(adispatch(event=event, data=data))
+
+
 def enroll(event: str):
     """
     Decorator to register a handler function for a specific event.
@@ -40,18 +62,3 @@ def erase(event: str, handler) -> bool:
         return True
     except KeyError:
         return False
-
-
-def dispatch(event: str, data: dict) -> None:
-    """
-    Calls all handlers enrolled for a given event.
-    """
-
-    def _asynchronous(handler) -> bool:
-        return type(handler) is not type(lambda: None)
-
-    for enrollee in _enrolled.get(event, set()):
-        if _asynchronous(enrollee):
-            asyncio.run(enrollee(data=data))
-        else:
-            enrollee(data=data)

@@ -23,6 +23,8 @@ def function(data: dict):
 dispatch(event="test", data={"message": "This is a test"})
 ```
 
+Use the similar `adispatch` function when you want the event to be delivered asychronously.
+
 ### Custom Decorator
 
 ```python
@@ -43,4 +45,4 @@ def setup(data: dict):
 dispatch(event="notify", data={chr(randint(0, 0x10FFFF)): randint(0, 100)})
 ```
 
-See `test.py` for a detail example
+See `test.py` for a detailed example

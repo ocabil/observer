@@ -8,17 +8,21 @@ A simple MicroPython implementation of the Observer design pattern using decorat
 ## Usage
 
 ```python
+import asyncio
+
 from observer import dispatch, enroll
 
+
 @enroll("test")
-async def asyncFunction(data: dict):
-    print(f"`asyncFunction` data={data}")
+async def async_handler(data: dict):
+    print(f"`async_handler` data={data}")
     await asyncio.sleep(0.1)
 
 
 @enroll("test")
-def function(data: dict):
-    print(f"`function` data={data}")
+def handler(data: dict):
+    print(f"`handler` data={data}")
+
 
 dispatch(event="test", data={"message": "This is a test"})
 ```
@@ -31,11 +35,13 @@ Use the similar `adispatch` function when you want the event to be delivered asy
 from random import randint
 from observer import dispatch, enroll
 
+
 def notify(handler):
     """
     `@notify` Decorator
     """
     return enroll(event="notify")(handler)
+
 
 @notify
 def setup(data: dict):

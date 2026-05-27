@@ -34,16 +34,8 @@ def dispatch(event: str, data: dict) -> None:
 
 def enroll(event: str):
     """
-    Decorator to register a handler function for a specific event.
-    It supports both synchronous and asynchronous functions.
-
-    .. code-block:: python
-
-        from observer import enroll
-
-        @enroll("event")
-        def handler(data: dict):
-            print(f"{handler.__name__} received data: {data}")
+    Decorator used to register an asynchronous, or synchronous, handler function.
+    Handler function should accept a single argument, `data`, which should be a dictionary.
     """
 
     def decorator(handler):

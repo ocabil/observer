@@ -5,19 +5,19 @@ import observer
 
 
 @observer.enroll("test")
-async def asyncFunction(data: dict):
-    print(f"`asyncFunction` data={data}")
+async def async_handler(data: dict):
+    print(f"`async_handler` data={data}")
     await asyncio.sleep(0.1)
 
 
 @observer.enroll("test")
-def function(data: dict):
-    print(f"`function` data={data}")
+def handler(data: dict):
+    print(f"`handler` data={data}")
 
 
 # Custom decorator using observer.enroll
-def test(handler):
-    return observer.enroll("test")(handler)
+def test(_handler):
+    return observer.enroll("test")(_handler)
 
 
 @test
@@ -25,7 +25,7 @@ def f(data: dict):
     print(f"`{f.__name__}` data={data}")
 
 
-def randomData() -> dict:
+def random_data() -> dict:
     return {
         "args": [random.randint(0, 100) for _ in range(random.randint(1, 4))],
         "kwargs": {
@@ -35,33 +35,34 @@ def randomData() -> dict:
     }
 
 
-def randomDict():
+def random_dict():
     return {
         chr(random.randint(0, 0x10FFFF)): random.randint(0, 100)
         for _ in range(random.randint(1, 4))
     }
 
 
-def randomList():
+def random_list():
     return [random.randint(0, 100) for _ in range(random.randint(1, 4))]
 
 
+_data: dict = random_data()
+
 # Dispatch
-data: dict = randomData()
-print(f"Dispatching event='test' with data={data}")
-observer.dispatch(event="test", data=data)
+print(f"Dispatching event='test' with data={_data}")
+observer.dispatch(event="test", data=_data)
 print()
 
 # Erase
-print(f"Erasing handler={function.__name__}")
-erased: bool = observer.erase(event="test", handler=function)
+print(f"Erasing handler={handler.__name__}")
+erased: bool = observer.erase(event="test", handler=handler)
 print(f"erased={erased}")
 print()
 
 # Dispatch
-data: dict = randomData()
-print(f"Dispatching event='test' with data={data} after erasing `{function.__name__}`")
-observer.dispatch(event="test", data=data)
+_data: dict = random_data()
+print(f"Dispatching event='test' with data={_data} after erasing `{handler.__name__}`")
+observer.dispatch(event="test", data=_data)
 print()
 
 print("Goodbye!")
